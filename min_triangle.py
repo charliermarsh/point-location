@@ -2,6 +2,8 @@ from math import sqrt, ceil, floor
 
 from geo.shapes import Point, Line, Triangle, Polygon, ccw
 from geo.spatial import convexHull
+from geo.generator import randomConvexPolygon
+from geo.drawer import plot, show
 
 
 def minTriangle(poly):
@@ -73,6 +75,8 @@ def minTriangle(poly):
 
     def triangleForIndex(c, a, b):
         """Returns the minimal triangle with edge C flush to vertex c."""
+        a = max(a, c + 1) % n
+        b = max(b, c + 2) % n
         side_C = side(c)
         side_A = side(a)
 
@@ -132,9 +136,11 @@ def minTriangle(poly):
                 return h(gamma_B, side(c)) > h(b, side(c))
 
         # Increment b while low
+        print "b if low"
         while h((b + 1) % n, side_C) >= h(b, side_C):
             b = (b + 1) % n
 
+        print "b if low, a if high"
         # Increment a if low, b if high
         while h(b, side_C) > h(a, side_C):
             gamma_A = gamma(points[a], side_A, side_C)
@@ -145,6 +151,7 @@ def minTriangle(poly):
                 a = (a + 1) % n
                 side_A = side(a)
 
+        print "b tangency"
         # Search for b tangency
         gamma_B = gamma(points[b], side_A, side_C)
         while h(b, side_C) >= h((a - 1) % n, side_C) and (high(a, b, c, gamma_B) or a == b):
@@ -239,3 +246,9 @@ def boundingTriangle(points):
         return Polygon(expanded_points)
 
     return expand(minTriangle(Polygon(points)))
+
+if __name__ == "__main__":
+    poly = randomConvexPolygon(10)
+    triangle = minTriangle(poly)
+    plot(poly)
+    show(triangle, style='r--')
