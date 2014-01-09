@@ -5,7 +5,7 @@ Kirkpatrick's Algorithm for Log(n) point location in planar subdivisions. The or
 
 # Usage
 
-An example can be found in [Point Location.ipynb](http://nbviewer.ipython.org/github/crm416/point-location/blob/master/Point%20Location.ipynb).
+An example can be found in [PointLocation.ipynb](http://nbviewer.ipython.org/github/crm416/point-location/blob/master/PointLocation.ipynb).
 
 All shape primitives (including points and polygons) can be found in `geo.shapes`, while the implementation of Kirkpatrick's Algorithm is in `kirkpatrick`.
 
