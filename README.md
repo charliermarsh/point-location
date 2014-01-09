@@ -5,6 +5,8 @@ Kirkpatrick's Algorithm for Log(n) point location in planar subdivisions. The or
 
 # Usage
 
+An example can be found in [Point Location.ipynb](http://nbviewer.ipython.org/github/crm416/point-location/blob/master/Point%20Location.ipynb).
+
 All shape primitives (including points and polygons) can be found in `geo.shapes`, while the implementation of Kirkpatrick's Algorithm is in `kirkpatrick`.
 
 ```
@@ -12,8 +14,7 @@ from geo.generator import randomConvexTiling, randomPoint
 from kirkpatrick import Locator
 
 # generate a convex subdivison
-initial = randomConvexPolygon(100)
-subdivision = randomConcaveTiling(initial)
+subdivision = randomConcaveTiling(randomConvexPolygon(100))
 
 # run Kirkpatrick's
 locator = Locator(subdivision)
