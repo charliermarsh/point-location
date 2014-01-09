@@ -238,4 +238,4 @@ def boundingTriangle(points):
         expanded_points = [adjust(i) for i in range(poly.n)]
         return Polygon(expanded_points)
 
-    return expand(minEnclosingTriangle(points))
+    return expand(minTriangle(Polygon(points)))
