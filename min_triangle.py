@@ -78,7 +78,6 @@ def minTriangle(poly):
         a = max(a, c + 1) % n
         b = max(b, c + 2) % n
         side_C = side(c)
-        side_A = side(a)
 
         def h(point, side):
             """Return the distance from 'point' to 'side'."""
@@ -118,7 +117,7 @@ def minTriangle(poly):
             # Test if Gamma and B are on same side of line from adjacent
             # vertices
             if ccw(points[(b - 1) % n], points[(b + 1) % n], gamma_B) == ccw(points[(b - 1) % n], points[(b + 1) % n], points[b]):
-                return h(gamma_B, side(c)) > h(b, side(c))
+                return h(gamma_B, side_C) > h(b, side_C)
             else:
                 return False
 
@@ -133,31 +132,37 @@ def minTriangle(poly):
             if ccw(points[(b - 1) % n], points[(b + 1) % n], gamma_B) == ccw(points[(b - 1) % n], points[(b + 1) % n], points[b]):
                 return False
             else:
-                return h(gamma_B, side(c)) > h(b, side(c))
+                return h(gamma_B, side_C) > h(b, side_C)
 
-        # Increment b while low
-        print "b if low"
-        while h((b + 1) % n, side_C) >= h(b, side_C):
-            b = (b + 1) % n
+        def onLeftChain(b):
+            return h((b + 1) % n, side_C) >= h(b, side_C)
 
-        print "b if low, a if high"
-        # Increment a if low, b if high
-        while h(b, side_C) > h(a, side_C):
-            gamma_A = gamma(points[a], side_A, side_C)
+        def incrementLowHigh(a, b, c):
+            gamma_A = gamma(points[a], side(a), side_C)
 
             if high(a, b, c, gamma_A):
                 b = (b + 1) % n
             else:
                 a = (a + 1) % n
-                side_A = side(a)
+            return a, b
 
-        print "b tangency"
-        # Search for b tangency
-        gamma_B = gamma(points[b], side_A, side_C)
-        while h(b, side_C) >= h((a - 1) % n, side_C) and (high(a, b, c, gamma_B) or a == b):
+        def tangency(a, b):
+            gamma_B = gamma(points[b], side(a), side_C)
+            return h(b, side_C) >= h((a - 1) % n, side_C) and high(a, b, c, gamma_B)
+
+        # Increment b while low
+        while onLeftChain(b):
             b = (b + 1) % n
-            gamma_B = gamma(points[b], side_A, side_C)
 
+        # Increment a if low, b if high
+        while h(b, side_C) > h(a, side_C):
+            a, b = incrementLowHigh(a, b, c)
+
+        # Search for b tangency
+        while tangency(a, b):
+            b = (b + 1) % n
+
+        gamma_B = gamma(points[b], side(a), side_C)
         # Adjust if necessary
         if low(a, b, c, gamma_B) or h(b, side_C) < h((a - 1) % n, side_C):
             side_B = side(b)
@@ -169,7 +174,7 @@ def minTriangle(poly):
                 gamma_A = gamma(points[(a - 1) % n], side_B, side_C)
                 side_A = Line(gamma_A, points[(a - 1) % n])
         else:
-            gamma_B = gamma(points[b], side_A, side_C)
+            gamma_B = gamma(points[b], side(a), side_C)
             side_B = Line(gamma_B, points[b])
             side_A = Line(gamma_B, points[(a - 1) % n])
 
